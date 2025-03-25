@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>DDD Steps List Demo with Web Components</title>
+  <title>DDD Steps List</title>
   <script>
     class DDDStepsList extends HTMLElement {
       connectedCallback() {
@@ -23,34 +23,63 @@
     customElements.define('ddd-steps-list-item', DDDStepsListItem);
   </script>
   <style>
-    /* The same CSS from above can be applied here, or you can use Shadow DOM styles */
-    ddd-steps-list {
-      display: block;
-      border: 2px solid #ccc;
-      border-radius: 6px;
-      padding: 16px;
-      max-width: 600px;
-      margin: 20px auto;
-      background-color: #fafafa;
-    }
-    ddd-steps-list-item {
-      display: block;
-      margin-bottom: 16px;
-      padding: 12px;
-      border: 1px solid #e0e0e0;
-      border-radius: 4px;
-      background-color: #ffffff;
-    }
-    ddd-steps-list-item::before {
-      content: attr(title);
-      display: block;
-      font-weight: bold;
-      margin-bottom: 8px;
+   /* Container resets the counter to start at 1 */
+ddd-steps-list {
+  display: block; /* Make sure it's displayed as a block container */
+  counter-reset: step; /* Initialize the counter named "step" */
+  margin: 0 auto;
+  max-width: 800px;
+  padding: 1rem;
+  border: 1px solid #ccc;
+}
+
+/* Each item is displayed in a block layout with some padding on the left
+   to accommodate the circular number on the left side */
+ddd-steps-list-item {
+  display: block;
+  position: relative; /* Allows absolute positioning of the pseudo-element */
+  margin-bottom: 2rem; /* Spacing between steps */
+  padding-left: 60px;  /* Space for the numbered circle */
+  border-radius: 5px;
+}
+
+/* Use a pseudo-element to show the step number in a circle */
+ddd-steps-list-item::before {
+  content: counter(step);    /* Display the current step number */
+  counter-increment: step;   /* Increment the counter for each item */
+  
+  /* Circle styling */
+  position: absolute;
+  left: 0;
+  top: 0.3rem; /* Adjust as needed to align vertically with your text */
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #003366;
+  color: #ffffff;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* Optional: Some nice styling for the text inside the circle */
+  font-size: 1rem;
+  line-height: 1;
+}
+    h1 {
       color: #003366;
+      text-align: center;
     }
+    h3 {
+      color: #003366;
+      text-align: center; 
+    }
+    
   </style>
 </head>
 <body>
+  <h1>Steps to Apply for First-Year Students</h1>
+  <h3>Please review these helpful steps to understand the Penn State application process, as well as the application requirements for first-year students.</h3>
 
   <ddd-steps-list ddd-primary="5">
     <ddd-steps-list-item title="Choose your enrollment period">

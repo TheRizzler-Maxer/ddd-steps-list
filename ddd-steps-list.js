@@ -67,6 +67,7 @@ export class DddStepsList extends DDDSuper(I18NMixin(LitElement)) {
         color: #003366;
         margin-top: 0;
       }
+      
     `;
   }
 
