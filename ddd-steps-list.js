@@ -6,6 +6,7 @@ import { LitElement, html, css } from "lit";
 import { DDDSuper } from "@haxtheweb/d-d-d/d-d-d.js";
 import { I18NMixin } from "@haxtheweb/i18n-manager/lib/I18NMixin.js";
 
+
 /**
  * `ddd-steps-list`
  * 
@@ -17,25 +18,29 @@ export class DddStepsList extends DDDSuper(I18NMixin(LitElement)) {
   static get tag() {
     return "ddd-steps-list";
   }
-
   constructor() {
     super();
+    // Initialize a default title for the component
     this.title = "";
+    
+    // Initialize and merge the localization object with a default title
     this.t = this.t || {};
     this.t = {
       ...this.t,
-      title: "Title",
+      title: "Steps", // Default title that can be overridden by localization
     };
-    this.registerLocalization({
+
+    // Register localization with the provided locales and path.
+    // Adjust the localesPath and locales list based on your project structure and requirements.
+    registerLocalization({
       context: this,
       localesPath:
-        new URL("./locales/ddd-steps-list.ar.json", import.meta.url).href +
-        "/../",
+        new URL("./locales/ddd-steps-list.ar.json", import.meta.url).href + "/../",
       locales: ["ar", "es", "hi", "zh"],
     });
   }
 
-  // Lit reactive properties
+  // Define reactive properties using Lit's property API
   static get properties() {
     return {
       ...super.properties,
@@ -43,33 +48,37 @@ export class DddStepsList extends DDDSuper(I18NMixin(LitElement)) {
     };
   }
 
-  // Lit scoped styles
+  // Optional: Define some styles for the component
   static get styles() {
-    return [super.styles,
-    css`
+    return css`
       :host {
         display: block;
-        color: var(--ddd-theme-primary);
-        background-color: var(--ddd-theme-accent);
-        font-family: var(--ddd-font-navigation);
+        font-family: Arial, sans-serif;
       }
-      .wrapper {
-        margin: var(--ddd-spacing-2);
-        padding: var(--ddd-spacing-4);
+      .steps-list {
+        border: 2px solid #ccc;
+        border-radius: 6px;
+        padding: 16px;
+        background-color: #fafafa;
+        max-width: 600px;
+        margin: 20px auto;
       }
-      h3 span {
-        font-size: var(--ddd-steps-list-label-font-size, var(--ddd-font-size-s));
+      h2 {
+        color: #003366;
+        margin-top: 0;
       }
-    `];
+    `;
   }
 
-  // Lit render the HTML
+  // The render method outputs the HTML template for the component.
+  // The <slot> element allows insertion of child elements (e.g., <ddd-steps-list-item>).
   render() {
     return html`
-<div class="wrapper">
-  <h3><span>${this.t.title}:</span> ${this.title}</h3>
-  <slot></slot>
-</div>`;
+      <div class="steps-list">
+        <h2>${this.t.title || this.title}</h2>
+        <slot></slot>
+      </div>
+    `;
   }
 
   /**
