@@ -53,7 +53,7 @@ export class DddStepsList extends DDDSuper(I18NMixin(LitElement)) {
     return css`
       :host {
         display: block;
-        font-family: Arial, sans-serif;
+        font-family: Verdana sans-serif;
       }
       .steps-list {
         border: 2px solid #ccc;
