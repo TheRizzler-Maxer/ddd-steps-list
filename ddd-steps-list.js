@@ -6,89 +6,92 @@ import { LitElement, html, css } from "lit";
 import { DDDSuper } from "@haxtheweb/d-d-d/d-d-d.js";
 import { I18NMixin } from "@haxtheweb/i18n-manager/lib/I18NMixin.js";
 
-
 /**
  * `ddd-steps-list`
+ * 
+ * A custom element for displaying a list of steps with numbered circles and titles.
  * 
  * @demo index.html
  * @element ddd-steps-list
  */
 export class DddStepsList extends DDDSuper(I18NMixin(LitElement)) {
-
   static get tag() {
     return "ddd-steps-list";
   }
+
+  static get properties() {
+    return {
+      dddPrimary: { type: Boolean, attribute: "ddd-primary", reflect: true },
+    };
+  }
+
   constructor() {
     super();
-    // Initialize a default title for the component
-    this.title = "";
-    
-    // Initialize and merge the localization object with a default title
+    this.dddPrimary = false; // Default value for the `ddd-primary` attribute
+    this.title = ""; // Default title for localization
     this.t = this.t || {};
     this.t = {
       ...this.t,
       title: "Steps", // Default title that can be overridden by localization
     };
-
-    // Register localization with the provided locales and path.
-    // Adjust the localesPath and locales list based on your project structure and requirements.
-    registerLocalization({
-      context: this,
-      localesPath:
-        new URL("./locales/ddd-steps-list.ar.json", import.meta.url).href + "/../",
-      locales: ["ar", "es", "hi", "zh"],
-    });
   }
 
-  // Define reactive properties using Lit's property API
-  static get properties() {
-    return {
-      ...super.properties,
-      title: { type: String },
-    };
-  }
-
-  // Optional: Define some styles for the component
   static get styles() {
     return css`
       :host {
         display: block;
-        font-family: Verdana sans-serif;
+        counter-reset: step; /* Initialize the counter for step numbers */
       }
-      .steps-list {
-        border: 2px solid #ccc;
-        border-radius: 6px;
-        padding: 16px;
-        background-color: #fafafa;
-        max-width: 600px;
-        margin: 20px auto;
-      }
-      h2 {
-        color: #003366;
-        margin-top: 0;
-      }
-      
     `;
   }
 
-  // The render method outputs the HTML template for the component.
-  // The <slot> element allows insertion of child elements (e.g., <ddd-steps-list-item>).
   render() {
-    return html`
-      <div class="steps-list">
-        <h2>${this.t.title || this.title}</h2>
-        <slot></slot>
-      </div>
-    `;
+    return html`<slot @slotchange="${this._onSlotChange}"></slot>`;
   }
 
-  /**
-   * haxProperties integration via file reference
-   */
-  static get haxProperties() {
-    return new URL(`./lib/${this.tag}.haxProperties.json`, import.meta.url)
-      .href;
+  firstUpdated() {
+    this._validateChildren();
+  }
+
+  updated(changedProps) {
+    if (changedProps.has("dddPrimary")) {
+      this._updatePrimaryAttribute();
+    }
+  }
+
+  _onSlotChange() {
+    this._validateChildren();
+  }
+
+  _validateChildren() {
+    const children = Array.from(this.children);
+    let stepCount = 0;
+    children.forEach((child) => {
+      const tag = child.tagName.toLowerCase();
+      if (tag !== "ddd-steps-list-item") {
+        this.removeChild(child); // Remove invalid children
+      } else {
+        stepCount++;
+        child.step = stepCount; // Assign step numbers
+        if (this.dddPrimary) {
+          child.setAttribute("data-primary", "");
+        } else {
+          child.removeAttribute("data-primary");
+        }
+      }
+    });
+  }
+
+  _updatePrimaryAttribute() {
+    const items = this.querySelectorAll("ddd-steps-list-item");
+    items.forEach((item) => {
+      if (this.dddPrimary) {
+        item.setAttribute("data-primary", "");
+      } else {
+        item.removeAttribute("data-primary");
+      }
+    });
   }
 }
 
-globalThis.customElements.define(DddStepsList.tag, DddStepsList);
+customElements.define(DddStepsList.tag, DddStepsList);

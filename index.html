@@ -4,56 +4,32 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DDD Steps List</title>
-  <script>
-    class DDDStepsList extends HTMLElement {
-      connectedCallback() {
-        // Called each time this element is inserted into the DOM
-        // You can attach shadow DOM or manipulate content here if needed
-      }
-    }
-
-    class DDDStepsListItem extends HTMLElement {
-      connectedCallback() {
-        // Similarly, do something when each item is inserted
-        // e.g., wrap its inner content, or read 'title' attribute
-      }
-    }
-
-    // Register custom elements
-    customElements.define('ddd-steps-list', DDDStepsList);
-    customElements.define('ddd-steps-list-item', DDDStepsListItem);
-  </script>
   <style>
-   /* Container resets the counter to start at 1 */
-ddd-steps-list {
-  display: block; /* Make sure it's displayed as a block container */
-  counter-reset: step; /* Initialize the counter named "step" */
-  margin: 0 auto;
-  max-width: 800px;
-  padding: 1rem;
-  border: 1px solid #ccc;
-  
-}
+    /* Container resets the counter to start at 1 */
+    ddd-steps-list {
+      display: block; /* Make sure it's displayed as a block container */
+      counter-reset: step; /* Initialize the counter named "step" */
+      margin: 0 auto;
+      max-width: 800px;
+      padding: 1rem;
+      border: 1px solid #ccc;
+    }
 
-/* Each item is displayed in a block layout with some padding on the left
-   to accommodate the circular number on the left side */
-ddd-steps-list-item {
-  display: block;
-  position: relative; /* Allows absolute positioning of the pseudo-element */
-  margin-bottom: 2rem; /* Spacing between steps */
-  padding-left: 60px;  /* Space for the numbered circle */
-  border-radius: 5px;
-}
+    ddd-steps-list-item {
+      display: block;
+      margin-bottom: 1rem;
+      position: relative;
+      padding-left: 3rem;
+    }
 
-/* Use a pseudo-element to show the step number in a circle */
-ddd-steps-list-item::after {
+    ddd-steps-list-item::after {
       content: counter(step);
       counter-increment: step;
       position: absolute;
       left: 0;
       top: 0.3rem;
-      width: 30px;
-      height: 30px;
+      width: 2rem;
+      height: 2rem;
       border-radius: 50%;
       background-color: #003366;
       color: #ffffff;
@@ -64,6 +40,7 @@ ddd-steps-list-item::after {
       font-size: 1rem;
       line-height: 1;
     }
+
     ddd-steps-list-item::before {
       content: attr(title);
       display: block;
@@ -71,10 +48,6 @@ ddd-steps-list-item::after {
       font-size: 1.2em;
       margin-bottom: 0.5em;
       color: #003366;
-    }
-    /* Remove the vertical line from the last item if you don't want it */
-    ddd-steps-list-item:last-child::before {
-      background-color: transparent; /* or border-left: none if using a border style */
     }
 
     h1 {
@@ -94,41 +67,57 @@ ddd-steps-list-item::after {
       background-color: #f0f0f0;
       font-family: Tahoma, Verdana, sans-serif;
     }
-    
   </style>
 </head>
 <body>
-  <h1>Steps to Apply for First-Year Students</h1>
-  <h4>Please review these helpful steps to understand the Penn State application process, as well as the application requirements for first-year students.</h4>
+  <body>
+    <h1>Steps to Apply for First-Year Students</h1>
+    <h4>Please review these helpful steps to understand the Penn State application process, as well as the application requirements for first-year students.</h4>
+  
+    <ddd-steps-list ddd-primary="5">
+  
+      <ddd-steps-list-item title="Apply to Penn State">
+        <p>When completing your application, choose from our twenty campuses and select a first-choice and an alternate campus.</p>
+        <p>If you’re enrolling in the 2+2 Plan, there’s no need to reapply when transitioning to your second campus. This streamlined process makes it easy to start at one campus and move seamlessly to another as you progress in your studies.</p>
+      </ddd-steps-list-item>
+  
+      <ddd-steps-list-item title="Enroll at your starting campus">
+        <p>Start your journey by completing general education and major prerequisite courses at your initial campus.</p>
+        <p>During your first two years, you'll have access to a wide range of opportunities, including student clubs, organizations, and intramural sports, all while learning from expert faculty. This experience will help you build a strong foundation and make the most of your time as a Penn Stater.</p>
+      </ddd-steps-list-item>
+      
+      <ddd-steps-list-item title="Work with your academic advisers">
+        <p>In the second semester of your sophomore year, you'll collaborate with your academic adviser to begin the campus transfer process.</p>
+        <p>Your adviser will guide you to ensure you're meeting the entrance requirements for your chosen program, as detailed in the Undergraduate Bulletin. This support helps you stay on track and smoothly transition to your next campus.</p>
+      </ddd-steps-list-item>
+  
+      <ddd-steps-list-item title="Explore the Undergraduate Bulletin">
+        <p>At Penn State, you’ll officially enter your major during your junior year.</p>
+        <p>To stay on track, review the entrance to major requirements in the Undergraduate Bulletin. By meeting the entrance to major requirements, you’ll transition smoothly into your chosen field of study. These requirements are consistent, whether you start at the University Park campus or another undergraduate campus.</p>
+      </ddd-steps-list-item>
+  
+      <ddd-steps-list-item title="Transition to your new campus">
+        <p>You’ll start your junior year at your new campus, continuing your Penn State journey as you work toward graduation.</p>
+        <p>As you approach the finish line, you'll earn your diploma and join the world’s largest alumni network, marking the beginning of your distinguished status as a Penn State graduate.</p>
+      </ddd-steps-list-item>
+  
+    </ddd-steps-list>
 
-  <ddd-steps-list ddd-primary="5">
+  <script>
+    class DDDStepsList extends HTMLElement {
+      constructor() {
+        super();
+      }
+    }
 
-    <ddd-steps-list-item title="Apply to Penn State">
-      <p>When completing your application, choose from our twenty campuses and select a first-choice and an alternate campus.</p>
-      <p>If you’re enrolling in the 2+2 Plan, there’s no need to reapply when transitioning to your second campus. This streamlined process makes it easy to start at one campus and move seamlessly to another as you progress in your studies.</p>
-    </ddd-steps-list-item>
+    class DDDStepsListItem extends HTMLElement {
+      constructor() {
+        super();
+      }
+    }
 
-    <ddd-steps-list-item title="Enroll at your starting campus">
-      <p>Start your journey by completing general education and major prerequisite courses at your initial campus.</p>
-      <p>During your first two years, you'll have access to a wide range of opportunities, including student clubs, organizations, and intramural sports, all while learning from expert faculty. This experience will help you build a strong foundation and make the most of your time as a Penn Stater.</p>
-    </ddd-steps-list-item>
-    
-    <ddd-steps-list-item title="Work with your academic advisers">
-      <p>In the second semester of your sophomore year, you'll collaborate with your academic adviser to begin the campus transfer process.</p>
-      <p>Your adviser will guide you to ensure you're meeting the entrance requirements for your chosen program, as detailed in the Undergraduate Bulletin. This support helps you stay on track and smoothly transition to your next campus.</p>
-    </ddd-steps-list-item>
-
-    <ddd-steps-list-item title="Explore the Undergraduate Bulletin">
-      <p>At Penn State, you’ll officially enter your major during your junior year.</p>
-      <p>To stay on track, review the entrance to major requirements in the Undergraduate Bulletin. By meeting the entrance to major requirements, you’ll transition smoothly into your chosen field of study. These requirements are consistent, whether you start at the University Park campus or another undergraduate campus.</p>
-    </ddd-steps-list-item>
-
-    <ddd-steps-list-item title="Transition to your new campus">
-      <p>You’ll start your junior year at your new campus, continuing your Penn State journey as you work toward graduation.</p>
-      <p>As you approach the finish line, you'll earn your diploma and join the world’s largest alumni network, marking the beginning of your distinguished status as a Penn State graduate.</p>
-    </ddd-steps-list-item>
-
-  </ddd-steps-list>
-
+    customElements.define('ddd-steps-list', DDDStepsList);
+    customElements.define('ddd-steps-list-item', DDDStepsListItem);
+  </script>
 </body>
 </html>
