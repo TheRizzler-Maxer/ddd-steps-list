@@ -6,126 +6,91 @@ import { LitElement, html, css } from "lit";
 import { DDDSuper } from "@haxtheweb/d-d-d/d-d-d.js";
 import { I18NMixin } from "@haxtheweb/i18n-manager/lib/I18NMixin.js";
 
-
 /**
  * `ddd-steps-list`
+ * 
+ * A custom element for displaying a list of steps with numbered circles and titles.
  * 
  * @demo index.html
  * @element ddd-steps-list
  */
 export class DddStepsList extends DDDSuper(I18NMixin(LitElement)) {
-
   static get tag() {
     return "ddd-steps-list";
   }
+
+  static get properties() {
+    return {
+      dddPrimary: { type: Boolean, attribute: "ddd-primary", reflect: true },
+    };
+  }
+
   constructor() {
     super();
-    // Initialize a default title for the component
-    this.title = "";
-    
-    // Initialize and merge the localization object with a default title
+    this.dddPrimary = false; // Default value for the `ddd-primary` attribute
+    this.title = ""; // Default title for localization
     this.t = this.t || {};
     this.t = {
       ...this.t,
       title: "Steps", // Default title that can be overridden by localization
     };
-
-    // Register localization with the provided locales and path.
-    // Adjust the localesPath and locales list based on your project structure and requirements.
-    registerLocalization({
-      context: this,
-      localesPath:
-        new URL("./locales/ddd-steps-list.ar.json", import.meta.url).href + "/../",
-      locales: ["ar", "es", "hi", "zh"],
-    });
   }
 
-  // Define reactive properties using Lit's property API
-  static get properties() {
-    return {
-      ...super.properties,
-      title: { type: String },
-    };
-  }
-
-  // Optional: Define some styles for the component
   static get styles() {
     return css`
       :host {
         display: block;
-        font-family: Verdana sans-serif;
+        counter-reset: step; /* Initialize the counter for step numbers */
       }
-      .steps-list {
-        border: 2px solid #ccc;
-        border-radius: 6px;
-        padding: 16px;
-        background-color: #fafafa;
-        max-width: 600px;
-        margin: 20px auto;
-      }
-      h2 {
-        color: #003366;
-        margin-top: 0;
-      }
-      
     `;
   }
 
-  // The render method outputs the HTML template for the component.
-  // The <slot> element allows insertion of child elements (e.g., <ddd-steps-list-item>).
   render() {
-    return html`
-      <div class="steps-list">
-        <h2>${this.t.title || this.title}</h2>
-        <slot></slot>
-      </div>
-
-    <h1>Steps to Apply for First-Year Students</h1>
-    <h4>Please review these helpful steps to understand the Penn State application process, as well as the application requirements for first-year students.</h4>
-
-  <ddd-steps-list ddd-primary="5">
-    
-    <ddd-steps-list-item title="Apply to Penn State">
-      <p>When completing your application, choose from our twenty campuses and select a first-choice and an alternate campus.</p>
-      <p>If you’re enrolling in the 2+2 Plan, there’s no need to reapply when transitioning to your second campus. This streamlined process makes it easy to start at one campus and move seamlessly to another as you progress in your studies.</p>
-    </ddd-steps-list-item>
-
-    <ddd-steps-list-item title="Enroll at your starting campus">
-      <p>Start your journey by completing general education and major prerequisite courses at your initial campus.</p>
-      <p>During your first two years, you'll have access to a wide range of opportunities, including student clubs, organizations, and intramural sports, all while learning from expert faculty. This experience will help you build a strong foundation and make the most of your time as a Penn Stater.</p>
-    </ddd-steps-list-item>
-    
-    <ddd-steps-list-item title="Work with your academic advisers">
-      <p>In the second semester of your sophomore year, you'll collaborate with your academic adviser to begin the campus transfer process.</p>
-      <p>Your adviser will guide you to ensure you're meeting the entrance requirements for your chosen program, as detailed in the Undergraduate Bulletin. This support helps you stay on track and smoothly transition to your next campus.</p>
-    </ddd-steps-list-item>
-
-    <ddd-steps-list-item title="Explore the Undergraduate Bulletin">
-      <p>At Penn State, you’ll officially enter your major during your junior year.</p>
-      <p>To stay on track, review the entrance to major requirements in the Undergraduate Bulletin. By meeting the entrance to major requirements, you’ll transition smoothly into your chosen field of study. These requirements are consistent, whether you start at the University Park campus or another undergraduate campus.</p>
-    </ddd-steps-list-item>
-
-    <ddd-steps-list-item title="Transition to your new campus">
-      <p>You’ll start your junior year at your new campus, continuing your Penn State journey as you work toward graduation.</p>
-      <p>As you approach the finish line, you'll earn your diploma and join the world’s largest alumni network, marking the beginning of your distinguished status as a Penn State graduate.</p>
-    </ddd-steps-list-item>
-
-    
-    <ddd-steps-list-item title="Valid Step"></ddd-steps-list-item>
-      <h2>Invalid Element</h2>
-      <div>Another Invalid Element</div>
-    </ddd-steps-list>
-
-  </ddd-steps-list>
-    `;
+    return html`<slot @slotchange="${this._onSlotChange}"></slot>`;
   }
 
-  /**
-   * haxProperties integration via file reference
-   */
-  static get haxProperties() {
-    return new URL(`./lib/${this.tag}.haxProperties.json`, import.meta.url)
-      .href;
+  firstUpdated() {
+    this._validateChildren();
+  }
+
+  updated(changedProps) {
+    if (changedProps.has("dddPrimary")) {
+      this._updatePrimaryAttribute();
+    }
+  }
+
+  _onSlotChange() {
+    this._validateChildren();
+  }
+
+  _validateChildren() {
+    const children = Array.from(this.children);
+    let stepCount = 0;
+    children.forEach((child) => {
+      const tag = child.tagName.toLowerCase();
+      if (tag !== "ddd-steps-list-item") {
+        this.removeChild(child); // Remove invalid children
+      } else {
+        stepCount++;
+        child.step = stepCount; // Assign step numbers
+        if (this.dddPrimary) {
+          child.setAttribute("data-primary", "");
+        } else {
+          child.removeAttribute("data-primary");
+        }
+      }
+    });
+  }
+
+  _updatePrimaryAttribute() {
+    const items = this.querySelectorAll("ddd-steps-list-item");
+    items.forEach((item) => {
+      if (this.dddPrimary) {
+        item.setAttribute("data-primary", "");
+      } else {
+        item.removeAttribute("data-primary");
+      }
+    });
   }
 
   connectedCallback() {
@@ -150,4 +115,4 @@ export class DddStepsList extends DDDSuper(I18NMixin(LitElement)) {
   }
 }
 
-globalThis.customElements.define(DddStepsList.tag, DddStepsList);
+customElements.define(DddStepsList.tag, DddStepsList);
