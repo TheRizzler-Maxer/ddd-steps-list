@@ -92,6 +92,27 @@ export class DddStepsList extends DDDSuper(I18NMixin(LitElement)) {
       }
     });
   }
+
+  connectedCallback() {
+    super.connectedCallback();
+    //This method is called when the element is added to the DOM. 
+    // It calls validateChildren to check the children.
+    this.validateChildren();
+    //This method loops through the children of the component. 
+    // If a child element is not a ddd-steps-list-item, it removes the child and logs a warning.
+  }
+
+  validateChildren() {
+    const validTagName = 'DDD-STEPS-LIST-ITEM';
+    const children = Array.from(this.children);
+
+    children.forEach(child => {
+      if (child.tagName !== validTagName) {
+        console.warn(`Invalid child element <${child.tagName.toLowerCase()}> removed from <ddd-steps-list>. Only <ddd-steps-list-item> is allowed.`);
+        this.removeChild(child);
+      }
+    });
+  }
 }
 
 customElements.define(DddStepsList.tag, DddStepsList);
