@@ -13,6 +13,7 @@
       max-width: 800px;
       padding: 1rem;
       border: 1px solid #ccc;
+      
     }
 
     ddd-steps-list-item {
@@ -21,7 +22,7 @@
       position: relative;
       padding-left: 3rem;
     }
-
+    
     ddd-steps-list-item::after {
       content: counter(step);
       counter-increment: step;
@@ -33,7 +34,7 @@
       border-radius: 50%;
       background-color: #003366;
       color: #ffffff;
-      font-weight: bold;
+      font-weight: none;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -49,6 +50,16 @@
       margin-bottom: 0.5em;
       color: #003366;
     }
+    .dotted-line {
+      position: absolute;
+      top: 150px;
+      left: 335px;
+      width: 10px;
+      height: 100%;
+      border-left: 2px dashed var(--ddd-theme-primary, #1e407c);
+      z-index: -1;
+    }
+    
 
     h1 {
       color: #003366;
@@ -71,12 +82,16 @@
 </head>
 <body>
   <body>
+    
     <h1>Steps to Apply for First-Year Students</h1>
     <h4>Please review these helpful steps to understand the Penn State application process, as well as the application requirements for first-year students.</h4>
   
     <ddd-steps-list ddd-primary="5">
+      <div class="dotted-line"></div>
+      
   
       <ddd-steps-list-item title="Apply to Penn State">
+        
         <p>When completing your application, choose from our twenty campuses and select a first-choice and an alternate campus.</p>
         <p>If you’re enrolling in the 2+2 Plan, there’s no need to reapply when transitioning to your second campus. This streamlined process makes it easy to start at one campus and move seamlessly to another as you progress in your studies.</p>
       </ddd-steps-list-item>
